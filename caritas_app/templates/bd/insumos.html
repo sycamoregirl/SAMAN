@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block app_title %}Insumos{% endblock %}
+{% block nav_bd %}active{% endblock %}
+{% block content %}
+
+<div class="tabs-app">
+    <a href="{{ url_for('bd_pacientes') }}" class="tab-app">Pacientes</a>
+    <a href="{{ url_for('bd_insumos') }}" class="tab-app active">Insumos</a>
+    <a href="{{ url_for('bd_reportes') }}" class="tab-app">Reportes</a>
+</div>
+
+<div style="display:flex;gap:8px;margin-bottom:12px">
+    <a href="{{ url_for('inventario_index') }}" class="btn-app btn-sm-app btn-primary">
+        <i class="bi bi-box-seam-fill"></i> Ir a Inventario
+    </a>
+</div>
+
+<div class="card-app">
+    <div class="card-header"><span><i class="bi bi-box-seam"></i> Stock de insumos</span></div>
+    <div class="card-body" style="padding:0">
+        <table class="table-app">
+            <thead><tr>
+                <th>ID</th>
+                <th>Insumo</th>
+                <th>Stock</th>
+                <th>M&iacute;nimo</th>
+                <th>Estado</th>
+            </tr></thead>
+            <tbody>
+                {% for i in insumos %}
+                <tr>
+                    <td><small style="color:var(--muted)">{{ i.id }}</small></td>
+                    <td><strong>{{ i.nombre }}</strong><br><small style="color:var(--muted)">{{ i.categoria or '' }}</small></td>
+                    <td>{{ i.stock_actual }} {{ i.unidad }}</td>
+                    <td>{{ i.stock_minimo }} {{ i.unidad }}</td>
+                    <td>
+                        {% if i.stock_actual < i.stock_minimo %}
+                        <span class="badge-app badge-severa">Cr&iacute;tico</span>
+                        {% elif i.stock_actual < i.stock_minimo * 2 %}
+                        <span class="badge-app badge-moderada">Bajo</span>
+                        {% else %}
+                        <span class="badge-app badge-normal">OK</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block app_title %}Ingreso de Insumos{% endblock %}
+{% block back_url %}{{ url_for('inventario_index') }}{% endblock %}
+{% block content %}
+
+<form method="POST">
+    <div class="card-app">
+        <div class="card-body">
+            <div class="form-group">
+                <label>Insumo *</label>
+                <select name="insumo_id" class="form-select" required>
+                    <option value="">Seleccionar...</option>
+                    {% for i in insumos %}
+                    <option value="{{ i.id }}">
+                        {{ i.nombre }} (Stock actual: {{ i.stock_actual }} {{ i.unidad }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Cantidad *</label>
+                <input type="number" name="cantidad" class="form-input" step="0.1" min="0.1" required>
+            </div>
+            <div class="form-group">
+                <label>Fecha</label>
+                <input type="date" name="fecha" class="form-input" value="{{ hoy }}" required>
+            </div>
+            <div class="form-group">
+                <label>Notas</label>
+                <textarea name="notas" class="form-textarea" rows="2" placeholder="Proveedor, motivo, etc."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn-app btn-primary">
+        <i class="bi bi-check-lg"></i> Registrar ingreso
+    </button>
+</form>
+{% endblock %}

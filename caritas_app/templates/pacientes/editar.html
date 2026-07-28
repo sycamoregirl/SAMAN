@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block app_title %}Editar Paciente{% endblock %}
+{% block nav_pacientes %}active{% endblock %}
+{% block back_url %}{{ url_for('paciente_perfil', id=paciente.id) }}{% endblock %}
+{% block content %}
+
+<form method="POST">
+    <div class="card-app">
+        <div class="card-header"><span><i class="bi bi-person-fill"></i> Datos personales</span></div>
+        <div class="card-body">
+            <div class="metric-row">
+                <div class="form-group" style="flex:1">
+                    <label>Nombre *</label>
+                    <input type="text" name="nombre" class="form-input" value="{{ paciente.nombre }}" required>
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label>Apellido *</label>
+                    <input type="text" name="apellido" class="form-input" value="{{ paciente.apellido }}" required>
+                </div>
+            </div>
+            <div class="metric-row">
+                <div class="form-group" style="flex:1">
+                    <label>Fecha de nacimiento *</label>
+                    <input type="date" name="fecha_nac" class="form-input" value="{{ paciente.fecha_nac }}" required>
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label>Sexo</label>
+                    <select name="sexo" class="form-select">
+                        <option value="">Seleccionar...</option>
+                        <option value="M" {% if paciente.sexo == 'M' %}selected{% endif %}>Masculino</option>
+                        <option value="F" {% if paciente.sexo == 'F' %}selected{% endif %}>Femenino</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>C&eacute;dula de identidad (opcional)</label>
+                <input type="text" name="cedula" class="form-input" value="{{ paciente.cedula or '' }}">
+            </div>
+            <div class="form-group">
+                <label>Tel&eacute;fono (opcional)</label>
+                <input type="text" name="telefono" class="form-input" value="{{ paciente.telefono or '' }}">
+            </div>
+            <div class="form-group">
+                <label>Direcci&oacute;n</label>
+                <textarea name="direccion" class="form-textarea" rows="2">{{ paciente.direccion or '' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label class="inline-flex" style="gap:8px;cursor:pointer">
+                    <input type="checkbox" name="embarazada" value="1" {% if paciente.embarazada %}checked{% endif %}>
+                    <span>Paciente embarazada</span>
+                </label>
+            </div>
+            <div class="form-group">
+                <label class="inline-flex" style="gap:8px;cursor:pointer">
+                    <input type="checkbox" name="lactante" value="1" {% if paciente.lactante %}checked{% endif %}>
+                    <span>Madre lactante</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-app">
+        <div class="card-header"><span><i class="bi bi-people"></i> Cuidador <span style="font-weight:400;color:var(--muted);font-size:12px">(opcional, solo si es ni&ntilde;o)</span></span></div>
+        <div class="card-body">
+            <div class="metric-row">
+                <div class="form-group" style="flex:1">
+                    <label>Nombre del cuidador</label>
+                    <input type="text" name="cuidador_nombre" class="form-input" value="{{ paciente.cuidador_nombre or '' }}">
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label>Apellido del cuidador</label>
+                    <input type="text" name="cuidador_apellido" class="form-input" value="{{ paciente.cuidador_apellido or '' }}">
+                </div>
+            </div>
+            <div class="metric-row">
+                <div class="form-group" style="flex:1">
+                    <label>C&eacute;dula del cuidador</label>
+                    <input type="text" name="cuidador_cedula" class="form-input" value="{{ paciente.cuidador_cedula or '' }}">
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label>Tel&eacute;fono del cuidador</label>
+                    <input type="text" name="cuidador_telefono" class="form-input" value="{{ paciente.cuidador_telefono or '' }}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-app">
+        <div class="card-header"><span><i class="bi bi-star-fill"></i> Beneficio Tengo</span></div>
+        <div class="card-body">
+            <div class="form-group">
+                <label>Fecha de inicio</label>
+                <input type="date" name="tengo_fecha_inicio" class="form-input" value="{{ tengo.fecha_inicio[:10] if tengo and tengo.fecha_inicio else '' }}">
+            </div>
+            <div class="form-group">
+                <label class="inline-flex" style="gap:8px;cursor:pointer">
+                    <input type="checkbox" name="tengo_activa" value="1" {% if tengo and tengo.activa %}checked{% endif %}>
+                    <span>Activo</span>
+                </label>
+            </div>
+            <div class="form-group">
+                <label>Fecha de fin (si est&aacute; inactivo)</label>
+                <input type="date" name="tengo_fecha_fin" class="form-input" value="{{ tengo.fecha_fin[:10] if tengo and tengo.fecha_fin else '' }}">
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn-app btn-primary">
+        <i class="bi bi-check-lg"></i> Guardar cambios
+    </button>
+</form>
+{% endblock %}

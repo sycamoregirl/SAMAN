@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block app_title %}Sincronizaci&oacute;n{% endblock %}
+{% block nav_sync %}active{% endblock %}
+{% block content %}
+
+<div class="card-app">
+    <div class="card-header"><span><i class="bi bi-download"></i> Exportar datos</span></div>
+    <div class="card-body">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">
+            Descarga toda la base de datos como archivo JSON para respaldo o transferencia.
+        </p>
+        <a href="{{ url_for('sync_exportar') }}" class="btn-app btn-primary">
+            <i class="bi bi-file-earmark-arrow-down"></i> Exportar JSON
+        </a>
+    </div>
+</div>
+
+<div class="card-app">
+    <div class="card-header"><span><i class="bi bi-upload"></i> Importar datos</span></div>
+    <div class="card-body">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">
+            Selecciona un archivo JSON previamente exportado para importar los datos.
+            Los registros existentes no se duplicar&aacute;n.
+        </p>
+        <form method="POST" action="{{ url_for('sync_importar') }}" enctype="multipart/form-data">
+            <div class="form-group">
+                <input type="file" name="archivo" class="form-input" accept=".json" required>
+            </div>
+            <button type="submit" class="btn-app btn-primary">
+                <i class="bi bi-upload"></i> Importar
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

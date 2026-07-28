@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block app_title %}{{ paciente.nombre }} {{ paciente.apellido }}{% endblock %}
+{% block nav_pacientes %}active{% endblock %}
+{% block back_url %}{{ url_for('pacientes_lista') }}{% endblock %}
+{% block content %}
+
+{% if not paciente.activo %}
+<div class="alert-app alert-danger" style="text-align:center"><i class="bi bi-person-x-fill"></i> Paciente inactivo</div>
+{% endif %}
+
+{% if alerta_monitoreo and paciente.activo %}
+<div class="alert-app alert-warning" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+    <span style="flex:1"><i class="bi bi-exclamation-triangle-fill"></i> {{ alerta_monitoreo }}</span>
+    <div style="display:flex;gap:6px;flex-shrink:0">
+        <a href="{{ url_for('paciente_continuar', id=paciente.id) }}" class="btn-app btn-sm-app btn-success">Si, continuar</a>
+        <a href="{{ url_for('paciente_dar_baja', id=paciente.id) }}" class="btn-app btn-sm-app btn-danger" onclick="return confirm('Dar de baja a este paciente?')">No, dar de baja</a>
+    </div>
+</div>
+{% endif %}
+
+<div class="card-app">
+    <div class="profile-header">
+        <div class="profile-avatar"><i class="bi bi-person-fill"></i></div>
+        <h5 style="margin:0;font-weight:700;font-size:16px">{{ paciente.nombre }} {{ paciente.apellido }}</h5>
+        <div style="color:var(--muted);font-size:13px;margin:4px 0">
+            {{ edad }} a&ntilde;os &middot; {{ paciente.fecha_nac }}
+            {% if paciente.sexo %}&middot; {{ 'Masculino' if paciente.sexo == 'M' else 'Femenino' }}{% endif %}
+        </div>
+        <div class="inline-flex" style="justify-content:center;margin:6px 0">
+            <span class="badge-app {{ get_categoria_color(categoria) }}">{{ categoria }}</span>
+            {% if not paciente.activo %}
+            <span class="badge-app badge-severa">Inactivo</span>
+            {% endif %}
+            {% if tengo and tengo.activa %}
+            <span class="badge-app badge-lactante">Tengo activo</span>
+            {% endif %}
+        </div>
+        {% if paciente.cedula or paciente.telefono or paciente.direccion %}
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">
+            {% if paciente.cedula %}<div><i class="bi bi-card-text"></i> {{ paciente.cedula }}</div>{% endif %}
+            {% if paciente.telefono %}<div><i class="bi bi-telephone"></i> {{ paciente.telefono }}</div>{% endif %}
+            {% if paciente.direccion %}<div><i class="bi bi-geo-alt"></i> {{ paciente.direccion }}</div>{% endif %}
+        </div>
+        {% endif %}
+        <div style="margin-top:8px;display:flex;gap:6px;justify-content:center">
+            <a href="{{ url_for('paciente_editar', id=paciente.id) }}" class="btn-app btn-sm-app btn-outline">
+                <i class="bi bi-pencil"></i> Editar
+            </a>
+            {% if not paciente.activo %}
+            <a href="{{ url_for('paciente_reactivar', id=paciente.id) }}" class="btn-app btn-sm-app btn-success">
+                <i class="bi bi-play-fill"></i> Reactivar
+            </a>
+            {% endif %}
+            {% if session.rol == 'admin' %}
+            <form method="POST" action="{{ url_for('paciente_eliminar', id=paciente.id) }}" style="display:inline" onsubmit="return confirm('Eliminar a {{ paciente.nombre }} {{ paciente.apellido }} y todos sus datos?')">
+                <button type="submit" class="btn-app btn-sm-app btn-danger">
+                    <i class="bi bi-trash-fill"></i> Eliminar
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if categoria == 'Niño' and (paciente.cuidador_nombre or paciente.cuidador_apellido or paciente.cuidador_cedula or paciente.cuidador_telefono) %}
+<div class="card-app">
+    <div class="card-header"><span><i class="bi bi-people"></i> Cuidador</span></div>
+    <div class="card-body">
+        {% if paciente.cuidador_nombre %}<div><i class="bi bi-person"></i> {{ paciente.cuidador_nombre }} {{ paciente.cuidador_apellido or '' }}</div>{% endif %}
+        {% if paciente.cuidador_cedula %}<div style="margin-top:4px"><i class="bi bi-card-text"></i> {{ paciente.cuidador_cedula }}</div>{% endif %}
+        {% if paciente.cuidador_telefono %}<div style="margin-top:4px"><i class="bi bi-telephone"></i> {{ paciente.cuidador_telefono }}</div>{% endif %}
+    </div>
+</div>
+{% endif %}
+
+<div class="card-app">
+    <div class="card-header">
+        <span><i class="bi bi-calendar-check"></i> Visitas</span>
+        <a href="{{ url_for('visita_nueva', id=paciente.id) }}" class="btn-app btn-sm-app btn-success">
+            <i class="bi bi-plus-lg"></i> Nueva
+        </a>
+    </div>
+    <div class="card-body" style="padding:0">
+        {% for v in visitas %}
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border){% if loop.first %};background:var(--card-hover){% endif %}">
+            <div style="display:flex;justify-content:space-between">
+                <strong style="font-size:14px">{{ v.fecha[:10] }}</strong>
+                <span class="badge-app" style="background:var(--nav);color:var(--muted)">{{ v.tipo }}</span>
+            </div>
+            <small style="color:var(--muted)">{{ v.usuario_nombre or '&mdash;' }}</small>
+            {% if v.observaciones %}<div style="margin-top:4px;font-size:13px;color:var(--muted)">{{ v.observaciones }}</div>{% endif %}
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="bi bi-calendar-x"></i><p>Sin visitas registradas</p></div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="card-app">
+    <div class="card-header">
+        <span><i class="bi bi-graph-up"></i> M&eacute;tricas</span>
+    </div>
+    <div class="card-body" style="padding:0">
+        {% for m in metricas %}
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border){% if loop.first %};background:var(--card-hover){% endif %}">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+                <small style="color:var(--muted)"><i class="bi bi-calendar3"></i> {{ m.fecha[:10] }}</small>
+                <div>
+                    <small style="color:var(--muted)">{{ m.usuario_nombre or '&mdash;' }}</small>
+                    <a href="{{ url_for('metrica_editar', id=m.id) }}" style="margin-left:8px;color:var(--primary)">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="metric-row">
+                <div class="metric-item"><div class="value">{{ m.talla }}</div><div class="label">Talla cm</div></div>
+                <div class="metric-item"><div class="value">{{ m.peso }}</div><div class="label">Peso kg</div></div>
+                {% if m.perimetro_brazo %}
+                <div class="metric-item"><div class="value">{{ m.perimetro_brazo }}</div><div class="label">Per&iacute;metro brazo cm</div></div>
+                {% endif %}
+                <div class="metric-item">
+                    <div class="value">
+                    {% if m.z_score is not none %}
+                    {% set zlabel, zclass = interpretar_zscore(m.z_score) %}
+                    <span class="z-score {{ zclass }}">
+                        {{ m.z_score }}
+                    </span>
+                    <span style="font-size:11px;color:var(--muted);display:block">{{ zlabel }}</span>
+                    {% else %}&mdash;{% endif %}
+                    </div>
+                    <div class="label">Z-score</div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="bi bi-bar-chart"></i><p>Sin m&eacute;tricas registradas</p></div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="card-app">
+    <div class="card-header">
+        <span><i class="bi bi-box-seam"></i> Insumos entregados</span>
+        <a href="{{ url_for('entrega_nueva', id=paciente.id) }}" class="btn-app btn-sm-app btn-outline">
+            <i class="bi bi-plus-lg"></i> Nueva
+        </a>
+    </div>
+    <div class="card-body" style="padding:0">
+        {% for e in entregas %}
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center{% if loop.first %};background:var(--card-hover){% endif %}">
+            <div>
+                <strong style="font-size:14px">{{ e.insumo_nombre }}</strong>
+                <div><small style="color:var(--muted)">{{ e.fecha[:10] }} &middot; {{ e.usuario_nombre or '&mdash;' }}</small></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <span style="font-weight:700;font-size:15px">{{ e.cantidad }} {{ e.unidad }}</span>
+                <a href="{{ url_for('entrega_editar', id=e.id) }}" style="color:var(--primary);font-size:14px">
+                    <i class="bi bi-pencil"></i>
+                </a>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="bi bi-box"></i><p>Sin entregas registradas</p></div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

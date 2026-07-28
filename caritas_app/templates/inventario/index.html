@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block app_title %}Inventario{% endblock %}
+{% block nav_menu %}active{% endblock %}
+{% block back_url %}{{ url_for('menu') }}{% endblock %}
+{% block content %}
+
+<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+    <a href="{{ url_for('inventario_llegada') }}" class="btn-app btn-sm-app btn-success">
+        <i class="bi bi-plus-lg"></i> Ingreso
+    </a>
+    <a href="{{ url_for('inventario_nuevo') }}" class="btn-app btn-sm-app btn-primary">
+        <i class="bi bi-box-seam"></i> Nuevo insumo
+    </a>
+    <a href="{{ url_for('inventario_entrega') }}" class="btn-app btn-sm-app btn-warning">
+        <i class="bi bi-arrow-up-circle"></i> Entrega
+    </a>
+</div>
+
+<div class="card-app">
+    <div class="card-header"><span><i class="bi bi-box-seam-fill"></i> Stock actual</span></div>
+    <div class="card-body" style="padding:0">
+        <table class="table-app">
+            <thead><tr>
+                <th>Insumo</th>
+                <th>Stock</th>
+                <th>M&iacute;nimo</th>
+                <th>Estado</th>
+                <th></th>
+            </tr></thead>
+            <tbody>
+                {% for i in insumos %}
+                <tr>
+                    <td><strong>{{ i.nombre }}</strong><br><small style="color:var(--muted)">{{ i.categoria or '' }}</small></td>
+                    <td>{{ i.stock_actual }} {{ i.unidad }}</td>
+                    <td>{{ i.stock_minimo }} {{ i.unidad }}</td>
+                    <td>
+                        {% if i.stock_actual < i.stock_minimo %}
+                        <span class="badge-app badge-severa">Cr&iacute;tico</span>
+                        {% elif i.stock_actual < i.stock_minimo * 2 %}
+                        <span class="badge-app badge-moderada">Bajo</span>
+                        {% else %}
+                        <span class="badge-app badge-normal">OK</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="POST" action="{{ url_for('inventario_eliminar', id=i.id) }}" onsubmit="return confirm('Eliminar {{ i.nombre }}?')" style="margin:0">
+                            <button type="submit" class="btn-app btn-sm-app btn-danger" style="padding:4px 8px;font-size:11px">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card-app">
+    <div class="card-header"><span><i class="bi bi-arrow-down-circle"></i> &Uacute;ltimos ingresos</span></div>
+    <div class="card-body" style="padding:0">
+        {% for i in ingresos %}
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between">
+            <div>
+                <strong>{{ i.insumo_nombre }}</strong>
+                <div><small style="color:var(--muted)">{{ i.fecha[:10] }} &middot; {{ i.usuario_nombre or '' }}</small></div>
+                {% if i.notas %}<small style="color:var(--muted)">{{ i.notas }}</small>{% endif %}
+            </div>
+            <span style="color:var(--success);font-weight:700">+{{ i.cantidad }} {{ i.unidad }}</span>
+        </div>
+        {% else %}
+        <div class="empty-state"><p>Sin ingresos registrados</p></div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="card-app">
+    <div class="card-header"><span><i class="bi bi-arrow-up-circle"></i> &Uacute;ltimas salidas</span></div>
+    <div class="card-body" style="padding:0">
+        {% for e in salidas %}
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between">
+            <div>
+                <strong>{{ e.insumo_nombre }}</strong>
+                <div><small style="color:var(--muted)">{{ e.fecha[:10] }} &middot; {{ e.paciente_nombre or 'Sin paciente' }}</small></div>
+            </div>
+            <span style="color:var(--danger);font-weight:700">-{{ e.cantidad }} {{ e.unidad }}</span>
+        </div>
+        {% else %}
+        <div class="empty-state"><p>Sin salidas registradas</p></div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

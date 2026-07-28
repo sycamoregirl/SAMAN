@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block app_title %}Nueva Entrega{% endblock %}
+{% block nav_pacientes %}active{% endblock %}
+{% block back_url %}{{ url_for('paciente_perfil', id=paciente.id) }}{% endblock %}
+{% block content %}
+
+<div class="card-app">
+    <div class="card-body" style="text-align:center;padding:12px 16px">
+        <strong>{{ paciente.nombre }} {{ paciente.apellido }}</strong>
+    </div>
+</div>
+
+<form method="POST">
+    <div class="card-app">
+        <div class="card-body">
+            <div class="form-group">
+                <label>Fecha</label>
+                <input type="date" name="fecha" class="form-input" value="{{ hoy }}" required>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-app">
+        <div class="card-header">
+            <span><i class="bi bi-box-seam"></i> Insumos a entregar</span>
+            <button type="button" class="btn-app btn-sm-app btn-outline" onclick="addRow()" style="width:auto;padding:4px 10px;font-size:12px">
+                <i class="bi bi-plus-lg"></i> Agregar
+            </button>
+        </div>
+        <div class="card-body" id="insumos-container">
+            <div class="insumo-row">
+                <div class="metric-row">
+                    <div class="form-group" style="flex:2">
+                        <select name="insumo_id" class="form-select" required>
+                            <option value="">Seleccionar...</option>
+                            {% for i in insumos %}
+                            <option value="{{ i.id }}">{{ i.nombre }} (Stock: {{ i.stock_actual }} {{ i.unidad }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex:1">
+                        <input type="number" name="cantidad" class="form-input" step="0.1" min="0.1" placeholder="Cant." required>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn-app btn-primary">
+        <i class="bi bi-check-lg"></i> Guardar entrega
+    </button>
+</form>
+
+<script>
+function addRow() {
+    const container = document.getElementById('insumos-container');
+    const row = document.createElement('div');
+    row.className = 'insumo-row';
+    row.innerHTML = `
+        <div class="metric-row">
+            <div class="form-group" style="flex:2">
+                <select name="insumo_id" class="form-select" required>
+                    <option value="">Seleccionar...</option>
+                    {% for i in insumos %}
+                    <option value="{{ i.id }}">{{ i.nombre }} (Stock: {{ i.stock_actual }} {{ i.unidad }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group" style="flex:1">
+                <input type="number" name="cantidad" class="form-input" step="0.1" min="0.1" placeholder="Cant." required>
+            </div>
+            <div class="form-group" style="flex:0;display:flex;align-items:flex-end;margin-bottom:12px">
+                <button type="button" class="btn-app btn-sm-app btn-danger" style="width:auto;padding:8px 10px" onclick="this.closest('.insumo-row').remove()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>`;
+    container.appendChild(row);
+}
+</script>
+{% endblock %}

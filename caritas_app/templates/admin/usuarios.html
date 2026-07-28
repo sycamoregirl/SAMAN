@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block app_title %}Administraci&oacute;n{% endblock %}
+{% block nav_menu %}active{% endblock %}
+{% block back_url %}{{ url_for('menu') }}{% endblock %}
+{% block content %}
+
+<div class="tabs-app">
+    <a href="{{ url_for('admin_usuarios') }}" class="tab-app active">Usuarios</a>
+    <a href="{{ url_for('admin_logs') }}" class="tab-app">Actividad</a>
+</div>
+
+<div class="card-app">
+    <div class="card-header"><span><i class="bi bi-person-plus-fill"></i> Nuevo usuario</span></div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('admin_usuario_nuevo') }}">
+            <div class="metric-row">
+                <div class="form-group" style="flex:1">
+                    <label>Nombre *</label>
+                    <input type="text" name="nombre" class="form-input" placeholder="María" required>
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label>Apellido *</label>
+                    <input type="text" name="apellido" class="form-input" placeholder="Gómez" required>
+                </div>
+            </div>
+            <div class="metric-row">
+                <div class="form-group" style="flex:1">
+                    <label>Usuario *</label>
+                    <input type="text" name="usuario" class="form-input" placeholder="maria123" required>
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label>Rol</label>
+                    <select name="rol" class="form-select">
+                        <option value="voluntario">Voluntario</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Contrase&ntilde;a *</label>
+                <input type="text" name="password" class="form-input" placeholder="Contraseña" required>
+            </div>
+            <button type="submit" class="btn-app btn-sm-app btn-primary">
+                <i class="bi bi-plus-lg"></i> Crear usuario
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="card-app">
+    <div class="card-header"><span><i class="bi bi-people-fill"></i> Usuarios registrados</span></div>
+    <div class="card-body" style="padding:0">
+        <table class="table-app">
+            <thead><tr>
+                <th>Nombre</th>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th></th>
+            </tr></thead>
+            <tbody>
+                {% for u in usuarios %}
+                <tr>
+                    <td><strong>{{ u.nombre }}</strong></td>
+                    <td><small style="color:var(--muted)">{{ u.usuario or '-' }}</small></td>
+                    <td><span class="badge-app {% if u.rol == 'admin' %}badge-embarazada{% else %}badge-normal{% endif %}">{{ u.rol }}</span></td>
+                    <td>{% if u.activo %}<span style="color:var(--success)">Activo</span>{% else %}<span style="color:var(--danger)">Inactivo</span>{% endif %}</td>
+                    <td>
+                        <div style="display:flex;gap:4px;flex-wrap:wrap">
+                            <a href="{{ url_for('admin_usuario_toggle', id=u.id) }}" class="btn-app btn-sm-app btn-outline" style="font-size:11px;padding:4px 8px">
+                                {% if u.activo %}<i class="bi bi-pause-fill"></i>{% else %}<i class="bi bi-play-fill"></i>{% endif %}
+                            </a>
+                            <form method="POST" action="{{ url_for('admin_usuario_reset', id=u.id) }}" style="display:inline">
+                                <button type="submit" class="btn-app btn-sm-app btn-outline" style="font-size:11px;padding:4px 8px" onclick="return confirm('Resetear contraseña de {{ u.nombre }}?')">
+                                    <i class="bi bi-key"></i>
+                                </button>
+                            </form>
+                            {% if u.id != session.usuario_id %}
+                            <form method="POST" action="{{ url_for('admin_usuario_eliminar', id=u.id) }}" style="display:inline">
+                                <button type="submit" class="btn-app btn-sm-app btn-danger" style="font-size:11px;padding:4px 8px" onclick="return confirm('Eliminar a {{ u.nombre }} permanentemente?')">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

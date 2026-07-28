@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block app_title %}Editar M&eacute;trica{% endblock %}
+{% block nav_pacientes %}active{% endblock %}
+{% block back_url %}{{ url_for('paciente_perfil', id=metrica.paciente_id) }}{% endblock %}
+{% block content %}
+
+<form method="POST">
+    <div class="card-app">
+        <div class="card-body">
+            <div class="form-group">
+                <label>Fecha</label>
+                <input type="date" name="fecha" class="form-input" value="{{ metrica.fecha[:10] }}" required>
+            </div>
+            <div class="metric-row">
+                <div class="form-group" style="flex:1">
+                    <label>Talla (cm) *</label>
+                    <input type="number" name="talla" class="form-input" step="1" value="{{ metrica.talla }}" required>
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label>Peso (kg) *</label>
+                    <input type="number" name="peso" class="form-input" step="0.1" value="{{ metrica.peso }}" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Per&iacute;metro del brazo (cm)</label>
+                <input type="number" name="perimetro" class="form-input" step="0.1" value="{{ metrica.perimetro_brazo or '' }}">
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn-app btn-primary">
+        <i class="bi bi-check-lg"></i> Guardar cambios
+    </button>
+</form>
+{% endblock %}

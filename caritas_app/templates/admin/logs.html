@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block app_title %}Registro de Actividad{% endblock %}
+{% block nav_menu %}active{% endblock %}
+{% block back_url %}{{ url_for('menu') }}{% endblock %}
+{% block content %}
+
+<div class="tabs-app">
+    <a href="{{ url_for('admin_usuarios') }}" class="tab-app">Usuarios</a>
+    <a href="{{ url_for('admin_logs') }}" class="tab-app active">Actividad</a>
+</div>
+
+<form method="GET" class="card-app">
+    <div class="card-body">
+        <div style="display:flex;gap:8px">
+            <div class="form-group" style="flex:1">
+                <label>Usuario</label>
+                <select name="usuario" class="form-select">
+                    <option value="">Todos</option>
+                    {% for u in usuarios %}
+                    <option value="{{ u.id }}" {% if usuario_filtro == u.id|string %}selected{% endif %}>{{ u.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group" style="flex:1">
+                <label>Acci&oacute;n</label>
+                <select name="accion" class="form-select">
+                    <option value="">Todas</option>
+                    {% for a in acciones %}
+                    <option value="{{ a.accion }}" {% if accion_filtro == a.accion %}selected{% endif %}>{{ a.accion }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn-app btn-sm-app btn-primary">
+            <i class="bi bi-funnel"></i> Filtrar
+        </button>
+    </div>
+</form>
+
+<div class="card-app">
+    <div class="card-header"><span><i class="bi bi-clock-history"></i> &Uacute;ltimas 200 acciones</span></div>
+    <div class="card-body" style="padding:0">
+        <table class="table-app">
+            <thead><tr>
+                <th>Fecha</th>
+                <th>Usuario</th>
+                <th>Acci&oacute;n</th>
+                <th>Detalle</th>
+            </tr></thead>
+            <tbody>
+                {% for l in logs %}
+                <tr>
+                    <td><small style="color:var(--muted)">{{ l.timestamp[:16] }}</small></td>
+                    <td>{{ l.usuario_nombre or 'Sistema' }}</td>
+                    <td><span class="badge-app" style="background:var(--nav);color:var(--muted)">{{ l.accion }}</span></td>
+                    <td><small style="color:var(--muted)">{{ l.detalle or '' }}</small></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" class="empty-state">Sin registros de actividad</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

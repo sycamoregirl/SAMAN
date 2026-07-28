@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>S.A.M.A.N</title>
+    <meta name="theme-color" content="#2D0808">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-192.png" sizes="192x192" type="image/png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="app-header" id="app-header">
+    <div>
+        <img src="logo.png" class="app-logo" alt="Logo" onerror="this.style.display='none'">
+        <img src="caritas_logo.png" class="app-logo" alt="Caritas" onerror="this.style.display='none'">
+    </div>
+    <span class="title">S.A.M.A.N</span>
+</header>
+
+<div class="container-app">
+
+    <!-- LOGIN -->
+    <div class="page active" id="page-login">
+        <div class="login-container">
+            <div style="display:flex;gap:12px;justify-content:center;align-items:center;margin-bottom:8px">
+                <img src="logo.png" style="height:50px" alt="Logo" onerror="this.style.display='none'">
+                <img src="caritas_logo.png" style="height:50px" alt="Caritas" onerror="this.style.display='none'">
+            </div>
+            <h2 class="login-title">S.A.M.A.N</h2>
+            <p class="login-subtitle">Sistema de monitoreo nutricional</p>
+            <form class="login-form" onsubmit="event.preventDefault(); App.loginSubmit(this)">
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input type="text" name="usuario" class="form-input" placeholder="Usuario" required autofocus>
+                </div>
+                <div class="form-group">
+                    <label>Contrasena</label>
+                    <input type="password" name="password" class="form-input" placeholder="Contrasena" required>
+                </div>
+                <button type="submit" class="btn-app btn-primary"><i class="bi bi-box-arrow-in-right"></i> Ingresar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MENU -->
+    <div class="page" id="page-menu">
+        <div id="page-menu-content"></div>
+    </div>
+
+    <!-- PACIENTES LISTA -->
+    <div class="page" id="page-pacientes">
+        <div id="page-pacientes-content"></div>
+    </div>
+
+    <!-- PACIENTE PERFIL -->
+    <div class="page" id="page-paciente_perfil">
+        <div id="page-paciente_perfil-content"></div>
+    </div>
+
+    <!-- PACIENTE NUEVO -->
+    <div class="page" id="page-paciente_nuevo">
+        <div id="page-paciente_nuevo-content"></div>
+    </div>
+
+    <!-- SYNC -->
+    <div class="page" id="page-sync">
+        <div class="card-app">
+            <div class="card-header"><span><i class="bi bi-cloud-arrow-up"></i> Exportar datos</span></div>
+            <div class="card-body">
+                <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Descarga todos los datos como archivo JSON</p>
+                <button class="btn-app btn-primary" onclick="App.handleSyncExport()">
+                    <i class="bi bi-download"></i> Exportar JSON
+                </button>
+            </div>
+        </div>
+        <div class="card-app">
+            <div class="card-header"><span><i class="bi bi-cloud-arrow-down"></i> Importar datos</span></div>
+            <div class="card-body">
+                <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Importa datos desde un archivo JSON (reemplaza los actuales)</p>
+                <div class="form-group">
+                    <input type="file" id="import-file" accept=".json" class="form-input">
+                </div>
+                <button class="btn-app btn-warning" onclick="App.handleSyncImport()">
+                    <i class="bi bi-upload"></i> Importar JSON
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- INVENTARIO (placeholder) -->
+    <div class="page" id="page-inventario">
+        <div class="empty-state"><i class="bi bi-box-seam"></i><p>Inventario - Proximamente en el prototipo</p></div>
+    </div>
+
+    <!-- REPORTES (placeholder) -->
+    <div class="page" id="page-reportes">
+        <div class="empty-state"><i class="bi bi-database"></i><p>Reportes - Proximamente en el prototipo</p></div>
+    </div>
+
+    <!-- ADMIN (placeholder) -->
+    <div class="page" id="page-admin">
+        <div class="empty-state"><i class="bi bi-shield"></i><p>Administracion - Proximamente en el prototipo</p></div>
+    </div>
+
+</div>
+
+<nav class="bottom-nav" id="app-nav" style="display:none">
+    <a onclick="App.navigate('menu')"><i class="bi bi-house-fill"></i>Inicio</a>
+    <a onclick="App.navigate('pacientes')"><i class="bi bi-people-fill"></i>Pacientes</a>
+    <a onclick="App.navigate('sync')"><i class="bi bi-arrow-repeat"></i>Sync</a>
+</nav>
+
+<script src="js/nutricion.js"></script>
+<script src="js/db.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/pacientes.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

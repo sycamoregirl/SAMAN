@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block app_title %}Redirigiendo...{% endblock %}
+{% block nav_pacientes %}active{% endblock %}
+{% block back_url %}{{ url_for('paciente_perfil', id=paciente.id) }}{% endblock %}
+{% block content %}
+<div class="card-app">
+    <div class="card-body" style="text-align:center;padding:24px">
+        <p style="color:var(--muted)">Las m&eacute;tricas solo se registran desde una visita.</p>
+        <a href="{{ url_for('visita_nueva', id=paciente.id) }}" class="btn-app btn-primary" style="margin-top:12px">
+            <i class="bi bi-calendar-check"></i> Ir a nueva visita
+        </a>
+    </div>
+</div>
+{% endblock %}

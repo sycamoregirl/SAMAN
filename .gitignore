@@ -1,0 +1,25 @@
+# Android build artifacts
+android-app/build/
+android-app/SAMAN.apk
+android-app/SAMAN.apk.idsig
+
+# Python vendor/dependencies
+caritas_app/vendor/
+caritas_app/__pycache__/
+caritas_app/database/__pycache__/
+*.pyc
+
+# Maventy backup (empty/failed)
+maventy_backup.ab
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Zip archives
+*.zip

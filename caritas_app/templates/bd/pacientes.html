@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block app_title %}Base de Datos{% endblock %}
+{% block nav_bd %}active{% endblock %}
+{% block content %}
+
+<div class="tabs-app">
+    <a href="{{ url_for('bd_pacientes') }}" class="tab-app active">Pacientes</a>
+    <a href="{{ url_for('bd_insumos') }}" class="tab-app">Insumos</a>
+    <a href="{{ url_for('bd_reportes') }}" class="tab-app">Reportes</a>
+</div>
+
+<form method="GET" style="margin-bottom:12px;display:flex;gap:8px">
+    <input type="text" name="q" class="form-input" placeholder="Buscar paciente..." value="{{ q }}" style="flex:1">
+    <button type="submit" class="btn-app btn-sm-app btn-primary"><i class="bi bi-search"></i></button>
+</form>
+
+<div class="card-app">
+    <div class="card-header">
+        <span><i class="bi bi-people-fill"></i> Pacientes</span>
+        <small style="color:var(--muted)">{{ pacientes|length }} registros</small>
+    </div>
+    <div class="card-body" style="padding:0">
+        <table class="table-app">
+            <thead><tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Edad/Sexo</th>
+                <th>Nivel</th>
+                <th>Tengo</th>
+            </tr></thead>
+            <tbody>
+                {% for p in pacientes %}
+                <tr>
+                    <td><small style="color:var(--muted)">{{ p.id }}</small></td>
+                    <td>
+                        <a href="{{ url_for('paciente_perfil', id=p.id) }}" style="color:var(--text)">
+                            <strong>{{ p.nombre }} {{ p.apellido }}</strong>
+                        </a>
+                    </td>
+                    <td><small style="color:var(--muted)">{{ p.fecha_nac[:4] }} {{ p.sexo or '' }}</small></td>
+                    <td>
+                        {% if p.nivel %}
+                        <span class="badge-app 
+                            {% if p.nivel == 'Severa' %}badge-severa
+                            {% elif p.nivel == 'Moderada' %}badge-moderada
+                            {% elif p.nivel == 'Leve' %}badge-leve
+                            {% else %}badge-normal{% endif %}">{{ p.nivel }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{% if p.tengo_activo %}<span class="badge-app badge-lactante">Si</span>{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

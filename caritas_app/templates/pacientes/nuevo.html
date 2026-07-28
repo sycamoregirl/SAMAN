@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block app_title %}Nuevo Paciente{% endblock %}
+{% block nav_pacientes %}active{% endblock %}
+{% block back_url %}{{ url_for('pacientes_lista') }}{% endblock %}
+{% block content %}
+
+<form method="POST">
+    <div class="card-app">
+        <div class="card-header"><span><i class="bi bi-person-fill"></i> Datos personales</span></div>
+        <div class="card-body">
+            <div class="metric-row">
+                <div class="form-group" style="flex:1">
+                    <label>Nombre *</label>
+                    <input type="text" name="nombre" class="form-input" required>
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label>Apellido *</label>
+                    <input type="text" name="apellido" class="form-input" required>
+                </div>
+            </div>
+            <div class="metric-row">
+                <div class="form-group" style="flex:1">
+                    <label>Fecha de nacimiento *</label>
+                    <input type="date" name="fecha_nac" class="form-input" required>
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label>Sexo</label>
+                    <select name="sexo" class="form-select">
+                        <option value="">Seleccionar...</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Femenino</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>C&eacute;dula de identidad (opcional)</label>
+                <input type="text" name="cedula" class="form-input" placeholder="V-12345678">
+            </div>
+            <div class="form-group">
+                <label>Tel&eacute;fono (opcional)</label>
+                <input type="text" name="telefono" class="form-input" placeholder="0412-1234567">
+            </div>
+            <div class="form-group">
+                <label>Direcci&oacute;n</label>
+                <textarea name="direccion" class="form-textarea" rows="2" placeholder="Direcci&oacute;n de habitaci&oacute;n"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="inline-flex" style="gap:8px;cursor:pointer">
+                    <input type="checkbox" name="embarazada" value="1">
+                    <span>Paciente embarazada</span>
+                </label>
+            </div>
+            <div class="form-group">
+                <label class="inline-flex" style="gap:8px;cursor:pointer">
+                    <input type="checkbox" name="lactante" value="1">
+                    <span>Madre lactante</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-app">
+        <div class="card-header"><span><i class="bi bi-people"></i> Cuidador <span style="font-weight:400;color:var(--muted);font-size:12px">(opcional, solo si es ni&ntilde;o)</span></span></div>
+        <div class="card-body">
+            <div class="metric-row">
+                <div class="form-group" style="flex:1">
+                    <label>Nombre del cuidador</label>
+                    <input type="text" name="cuidador_nombre" class="form-input">
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label>Apellido del cuidador</label>
+                    <input type="text" name="cuidador_apellido" class="form-input">
+                </div>
+            </div>
+            <div class="metric-row">
+                <div class="form-group" style="flex:1">
+                    <label>C&eacute;dula del cuidador</label>
+                    <input type="text" name="cuidador_cedula" class="form-input" placeholder="V-12345678">
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label>Tel&eacute;fono del cuidador</label>
+                    <input type="text" name="cuidador_telefono" class="form-input" placeholder="0412-1234567">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-app">
+        <div class="card-header"><span><i class="bi bi-graph-up"></i> M&eacute;trica inicial <span style="font-weight:400;color:var(--muted);font-size:12px">(opcional)</span></span></div>
+        <div class="card-body">
+            <div class="metric-row">
+                <div class="form-group" style="flex:1">
+                    <label>Peso (kg)</label>
+                    <input type="number" name="peso" class="form-input" step="0.1">
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label>Talla (cm)</label>
+                    <input type="number" name="talla" class="form-input" step="1">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Per&iacute;metro braquial (cm)</label>
+                <input type="number" name="perimetro" class="form-input" step="0.1">
+            </div>
+        </div>
+    </div>
+
+    <div class="card-app">
+        <div class="card-header"><span><i class="bi bi-star-fill"></i> Beneficio Tengo <span style="font-weight:400;color:var(--muted);font-size:12px">(opcional)</span></span></div>
+        <div class="card-body">
+            <div class="form-group">
+                <label>Fecha de inicio</label>
+                <input type="date" name="tengo_fecha_inicio" class="form-input">
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn-app btn-primary">
+        <i class="bi bi-check-lg"></i> Guardar paciente
+    </button>
+</form>
+{% endblock %}

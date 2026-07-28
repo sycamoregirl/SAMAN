@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block app_title %}Nuevo Insumo{% endblock %}
+{% block back_url %}{{ url_for('inventario_index') }}{% endblock %}
+{% block content %}
+
+<form method="POST">
+    <div class="card-app">
+        <div class="card-body">
+            <div class="form-group">
+                <label>Nombre del insumo *</label>
+                <input type="text" name="nombre" class="form-input" required placeholder="Ej: Arroz">
+            </div>
+            <div class="form-group">
+                <label>Categor&iacute;a</label>
+                <input type="text" name="categoria" class="form-input" placeholder="Ej: Alimentos">
+            </div>
+            <div class="form-group">
+                <label>Unidad *</label>
+                <input type="text" name="unidad" class="form-input" required placeholder="kg, L, unidad">
+            </div>
+            <div class="metric-row">
+                <div class="form-group" style="flex:1">
+                    <label>Stock actual</label>
+                    <input type="number" name="stock_actual" class="form-input" step="0.1" min="0" value="0">
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label>Stock m&iacute;nimo</label>
+                    <input type="number" name="stock_minimo" class="form-input" step="0.1" min="0" value="0">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn-app btn-primary">
+        <i class="bi bi-check-lg"></i> Crear insumo
+    </button>
+</form>
+{% endblock %}
