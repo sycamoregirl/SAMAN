@@ -3,7 +3,7 @@ $ErrorActionPreference = "Stop"
 $sdk = "$env:LOCALAPPDATA\Android\Sdk"
 $bt = "$sdk\build-tools\36.1.0"
 $plat = "$sdk\platforms\android-36\android.jar"
-$proj = "C:\Users\Danielb\Downloads\SAMAN-main\SAMAN-main\android-app"
+$proj = $PSScriptRoot
 $build = "$proj\build"
 
 # Clean
@@ -83,25 +83,31 @@ Write-Host "=== Step 7: Zipalign again ==="
 if ($LASTEXITCODE -ne 0) { throw "zipalign final failed" }
 
 Write-Host "=== Step 8: Generate keystore ==="
+$keystore = "$proj\saman.keystore"
 $keytool = "$env:JAVA_HOME\bin\keytool.exe"
-if (-not $keytool) { $keytool = "keytool" }
-if (-not (Test-Path "$build\saman.keystore")) {
+if (-not (Test-Path $keytool)) { $keytool = "keytool" }
+if (-not (Test-Path $keystore)) {
+    $ErrorActionPreference_old = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
     & $keytool -genkey -v `
-        -keystore "$build\saman.keystore" `
+        -keystore "$keystore" `
         -alias saman `
         -keyalg RSA `
         -keysize 2048 `
         -validity 10000 `
         -storepass saman123 `
         -keypass saman123 `
-        -dname "CN=SAMAN, OU=Dev, O=SAMAN, L=Unknown, ST=Unknown, C=VE" 2>&1
+        -dname "CN=SAMAN, OU=Dev, O=SAMAN, L=Unknown, ST=Unknown, C=VE" 2>&1 | Out-Null
+    $exitCode = $LASTEXITCODE
+    $ErrorActionPreference = $ErrorActionPreference_old
+    if ($exitCode -ne 0) { throw "keytool failed" }
 }
 
 Write-Host "=== Step 9: Sign APK ==="
 $signer = "$bt\apksigner.bat"
 if (-not (Test-Path $signer)) { $signer = "$bt\apksigner.bat" }
 & $signer sign `
-    --ks "$build\saman.keystore" `
+    --ks "$keystore" `
     --ks-key-alias saman `
     --ks-pass pass:saman123 `
     --key-pass pass:saman123 `

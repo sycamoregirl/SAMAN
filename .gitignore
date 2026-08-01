@@ -2,6 +2,8 @@
 android-app/build/
 android-app/SAMAN.apk
 android-app/SAMAN.apk.idsig
+android-app/saman.keystore
+apk_extract/
 
 # Python vendor/dependencies
 caritas_app/vendor/
